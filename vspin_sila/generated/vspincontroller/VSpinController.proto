@@ -1,0 +1,237 @@
+syntax = "proto3";
+
+import "SiLAFramework.proto";
+
+package sila2.org.mycompany.robotics.vspincontroller.v1;
+
+/* A feature to control a VSpin centrifuge with an integrated plate loader. It provides high-level commands for common operations like loading, unloading, and spinning, as well as lower-level commands for direct control of the hardware components. */
+service VSpinController {
+  /* Starts a centrifugation cycle with the specified parameters. */
+  rpc StartSpin (sila2.org.mycompany.robotics.vspincontroller.v1.StartSpin_Parameters) returns (sila2.org.silastandard.CommandConfirmation) {}
+  /* Monitor the state of StartSpin */
+  rpc StartSpin_Info (sila2.org.silastandard.CommandExecutionUUID) returns (stream sila2.org.silastandard.ExecutionInfo) {}
+  /* Retrieve result of StartSpin */
+  rpc StartSpin_Result(sila2.org.silastandard.CommandExecutionUUID) returns (sila2.org.mycompany.robotics.vspincontroller.v1.StartSpin_Responses) {}
+  /* Loads a plate from the external stage into a specified centrifuge bucket. */
+  rpc Load (sila2.org.mycompany.robotics.vspincontroller.v1.Load_Parameters) returns (sila2.org.silastandard.CommandConfirmation) {}
+  /* Monitor the state of Load */
+  rpc Load_Info (sila2.org.silastandard.CommandExecutionUUID) returns (stream sila2.org.silastandard.ExecutionInfo) {}
+  /* Retrieve result of Load */
+  rpc Load_Result(sila2.org.silastandard.CommandExecutionUUID) returns (sila2.org.mycompany.robotics.vspincontroller.v1.Load_Responses) {}
+  /* Unloads a plate from a specified centrifuge bucket to the external stage. */
+  rpc Unload (sila2.org.mycompany.robotics.vspincontroller.v1.Unload_Parameters) returns (sila2.org.silastandard.CommandConfirmation) {}
+  /* Monitor the state of Unload */
+  rpc Unload_Info (sila2.org.silastandard.CommandExecutionUUID) returns (stream sila2.org.silastandard.ExecutionInfo) {}
+  /* Retrieve result of Unload */
+  rpc Unload_Result(sila2.org.silastandard.CommandExecutionUUID) returns (sila2.org.mycompany.robotics.vspincontroller.v1.Unload_Responses) {}
+  /* Moves the loader to a predefined teachpoint. */
+  rpc GoToTeachpoint (sila2.org.mycompany.robotics.vspincontroller.v1.GoToTeachpoint_Parameters) returns (sila2.org.silastandard.CommandConfirmation) {}
+  /* Monitor the state of GoToTeachpoint */
+  rpc GoToTeachpoint_Info (sila2.org.silastandard.CommandExecutionUUID) returns (stream sila2.org.silastandard.ExecutionInfo) {}
+  /* Retrieve result of GoToTeachpoint */
+  rpc GoToTeachpoint_Result(sila2.org.silastandard.CommandExecutionUUID) returns (sila2.org.mycompany.robotics.vspincontroller.v1.GoToTeachpoint_Responses) {}
+  /* Moves the centrifuge rotor to the position for accessing bucket 1. */
+  rpc GoToBucket1 (sila2.org.mycompany.robotics.vspincontroller.v1.GoToBucket1_Parameters) returns (sila2.org.silastandard.CommandConfirmation) {}
+  /* Monitor the state of GoToBucket1 */
+  rpc GoToBucket1_Info (sila2.org.silastandard.CommandExecutionUUID) returns (stream sila2.org.silastandard.ExecutionInfo) {}
+  /* Retrieve result of GoToBucket1 */
+  rpc GoToBucket1_Result(sila2.org.silastandard.CommandExecutionUUID) returns (sila2.org.mycompany.robotics.vspincontroller.v1.GoToBucket1_Responses) {}
+  /* Moves the centrifuge rotor to the position for accessing bucket 2. */
+  rpc GoToBucket2 (sila2.org.mycompany.robotics.vspincontroller.v1.GoToBucket2_Parameters) returns (sila2.org.silastandard.CommandConfirmation) {}
+  /* Monitor the state of GoToBucket2 */
+  rpc GoToBucket2_Info (sila2.org.silastandard.CommandExecutionUUID) returns (stream sila2.org.silastandard.ExecutionInfo) {}
+  /* Retrieve result of GoToBucket2 */
+  rpc GoToBucket2_Result(sila2.org.silastandard.CommandExecutionUUID) returns (sila2.org.mycompany.robotics.vspincontroller.v1.GoToBucket2_Responses) {}
+  /* Opens the loader gripper. */
+  rpc OpenGripper (sila2.org.mycompany.robotics.vspincontroller.v1.OpenGripper_Parameters) returns (sila2.org.mycompany.robotics.vspincontroller.v1.OpenGripper_Responses) {}
+  /* Closes the loader gripper. */
+  rpc CloseGripper (sila2.org.mycompany.robotics.vspincontroller.v1.CloseGripper_Parameters) returns (sila2.org.mycompany.robotics.vspincontroller.v1.CloseGripper_Responses) {}
+  /* Opens the centrifuge door. */
+  rpc OpenDoor (sila2.org.mycompany.robotics.vspincontroller.v1.OpenDoor_Parameters) returns (sila2.org.mycompany.robotics.vspincontroller.v1.OpenDoor_Responses) {}
+  /* Closes the centrifuge door. */
+  rpc CloseDoor (sila2.org.mycompany.robotics.vspincontroller.v1.CloseDoor_Parameters) returns (sila2.org.mycompany.robotics.vspincontroller.v1.CloseDoor_Responses) {}
+  /* Locks the centrifuge door. */
+  rpc LockDoor (sila2.org.mycompany.robotics.vspincontroller.v1.LockDoor_Parameters) returns (sila2.org.mycompany.robotics.vspincontroller.v1.LockDoor_Responses) {}
+  /* Unlocks the centrifuge door. */
+  rpc UnlockDoor (sila2.org.mycompany.robotics.vspincontroller.v1.UnlockDoor_Parameters) returns (sila2.org.mycompany.robotics.vspincontroller.v1.UnlockDoor_Responses) {}
+  /* Locks the centrifuge bucket in place. */
+  rpc LockBucket (sila2.org.mycompany.robotics.vspincontroller.v1.LockBucket_Parameters) returns (sila2.org.mycompany.robotics.vspincontroller.v1.LockBucket_Responses) {}
+  /* Unlocks the centrifuge bucket. */
+  rpc UnlockBucket (sila2.org.mycompany.robotics.vspincontroller.v1.UnlockBucket_Parameters) returns (sila2.org.mycompany.robotics.vspincontroller.v1.UnlockBucket_Responses) {}
+  /* The current status of the centrifuge door. */
+  rpc Subscribe_DoorStatus (sila2.org.mycompany.robotics.vspincontroller.v1.Subscribe_DoorStatus_Parameters) returns (stream sila2.org.mycompany.robotics.vspincontroller.v1.Subscribe_DoorStatus_Responses) {}
+  /* Indicates if the loader's optical sensor detects a plate in the gripper. */
+  rpc Subscribe_IsPlateInGripper (sila2.org.mycompany.robotics.vspincontroller.v1.Subscribe_IsPlateInGripper_Parameters) returns (stream sila2.org.mycompany.robotics.vspincontroller.v1.Subscribe_IsPlateInGripper_Responses) {}
+  /* The current raw position of the centrifuge rotor. */
+  rpc Subscribe_RotorPosition (sila2.org.mycompany.robotics.vspincontroller.v1.Subscribe_RotorPosition_Parameters) returns (stream sila2.org.mycompany.robotics.vspincontroller.v1.Subscribe_RotorPosition_Responses) {}
+  /* The overall status of the centrifuge and loader system. */
+  rpc Subscribe_CentrifugeStatus (sila2.org.mycompany.robotics.vspincontroller.v1.Subscribe_CentrifugeStatus_Parameters) returns (stream sila2.org.mycompany.robotics.vspincontroller.v1.Subscribe_CentrifugeStatus_Responses) {}
+}
+
+/* Parameters for StartSpin */
+message StartSpin_Parameters {
+  sila2.org.silastandard.Real GForce = 1;  /* The relative centrifugal force to apply. */
+  sila2.org.silastandard.Integer Duration = 2;  /* The duration of the spin cycle in seconds. */
+  sila2.org.silastandard.Real Acceleration = 3;  /* The acceleration ramp as a percentage of the maximum possible acceleration. */
+}
+
+/* Responses of StartSpin */
+message StartSpin_Responses {
+}
+
+/* Parameters for Load */
+message Load_Parameters {
+  sila2.org.silastandard.Integer BucketNumber = 1;  /* The target bucket for the plate (1 or 2). */
+  sila2.org.silastandard.Real GripperZOffset = 2;  /* The vertical offset for the gripper movement. */
+  sila2.org.silastandard.Real PlateHeight = 3;  /* The height of the labware being handled. */
+  sila2.org.silastandard.String Speed = 4;  /* The speed of the loader movement. */
+  sila2.org.silastandard.Boolean IsGentle = 5;  /* If true, the gripper will use a gentle grip profile. */
+  sila2.org.silastandard.Boolean IgnorePlateSensor = 6;  /* If true, the optical sensor for plate detection will be ignored. */
+}
+
+/* Responses of Load */
+message Load_Responses {
+}
+
+/* Parameters for Unload */
+message Unload_Parameters {
+  sila2.org.silastandard.Integer BucketNumber = 1;  /* The source bucket of the plate (1 or 2). */
+  sila2.org.silastandard.Real GripperZOffset = 2;  /* The vertical offset for the gripper movement. */
+  sila2.org.silastandard.Real PlateHeight = 3;  /* The height of the labware being handled. */
+  sila2.org.silastandard.String Speed = 4;  /* The speed of the loader movement. */
+  sila2.org.silastandard.Boolean IsGentle = 5;  /* If true, the gripper will use a gentle grip profile. */
+  sila2.org.silastandard.Boolean IgnorePlateSensor = 6;  /* If true, the optical sensor for plate detection will be ignored. */
+}
+
+/* Responses of Unload */
+message Unload_Responses {
+}
+
+/* Parameters for GoToTeachpoint */
+message GoToTeachpoint_Parameters {
+  sila2.org.silastandard.String TeachpointName = 1;  /* The name of the destination teachpoint. */
+  sila2.org.silastandard.Real GripperZOffset = 2;  /* The vertical offset for the gripper movement. */
+  sila2.org.silastandard.Real PlateHeight = 3;  /* The height of the labware being handled. */
+  sila2.org.silastandard.String Speed = 4;  /* The speed of the loader movement. */
+}
+
+/* Responses of GoToTeachpoint */
+message GoToTeachpoint_Responses {
+}
+
+/* Parameters for GoToBucket1 */
+message GoToBucket1_Parameters {
+}
+
+/* Responses of GoToBucket1 */
+message GoToBucket1_Responses {
+}
+
+/* Parameters for GoToBucket2 */
+message GoToBucket2_Parameters {
+}
+
+/* Responses of GoToBucket2 */
+message GoToBucket2_Responses {
+}
+
+/* Parameters for OpenGripper */
+message OpenGripper_Parameters {
+}
+
+/* Responses of OpenGripper */
+message OpenGripper_Responses {
+}
+
+/* Parameters for CloseGripper */
+message CloseGripper_Parameters {
+  sila2.org.silastandard.Boolean IsGentle = 1;  /* If true, the gripper will use a gentle grip profile. */
+}
+
+/* Responses of CloseGripper */
+message CloseGripper_Responses {
+}
+
+/* Parameters for OpenDoor */
+message OpenDoor_Parameters {
+}
+
+/* Responses of OpenDoor */
+message OpenDoor_Responses {
+}
+
+/* Parameters for CloseDoor */
+message CloseDoor_Parameters {
+}
+
+/* Responses of CloseDoor */
+message CloseDoor_Responses {
+}
+
+/* Parameters for LockDoor */
+message LockDoor_Parameters {
+}
+
+/* Responses of LockDoor */
+message LockDoor_Responses {
+}
+
+/* Parameters for UnlockDoor */
+message UnlockDoor_Parameters {
+}
+
+/* Responses of UnlockDoor */
+message UnlockDoor_Responses {
+}
+
+/* Parameters for LockBucket */
+message LockBucket_Parameters {
+}
+
+/* Responses of LockBucket */
+message LockBucket_Responses {
+}
+
+/* Parameters for UnlockBucket */
+message UnlockBucket_Parameters {
+}
+
+/* Responses of UnlockBucket */
+message UnlockBucket_Responses {
+}
+
+/* Parameters for DoorStatus */
+message Subscribe_DoorStatus_Parameters {
+}
+
+/* Responses of DoorStatus */
+message Subscribe_DoorStatus_Responses {
+  sila2.org.silastandard.String DoorStatus = 1;  /* The current status of the centrifuge door. */
+}
+
+/* Parameters for IsPlateInGripper */
+message Subscribe_IsPlateInGripper_Parameters {
+}
+
+/* Responses of IsPlateInGripper */
+message Subscribe_IsPlateInGripper_Responses {
+  sila2.org.silastandard.Boolean IsPlateInGripper = 1;  /* Indicates if the loader's optical sensor detects a plate in the gripper. */
+}
+
+/* Parameters for RotorPosition */
+message Subscribe_RotorPosition_Parameters {
+}
+
+/* Responses of RotorPosition */
+message Subscribe_RotorPosition_Responses {
+  sila2.org.silastandard.Integer RotorPosition = 1;  /* The current raw position of the centrifuge rotor. */
+}
+
+/* Parameters for CentrifugeStatus */
+message Subscribe_CentrifugeStatus_Parameters {
+}
+
+/* Responses of CentrifugeStatus */
+message Subscribe_CentrifugeStatus_Responses {
+  sila2.org.silastandard.String CentrifugeStatus = 1;  /* The overall status of the centrifuge and loader system. */
+}

@@ -1,0 +1,24 @@
+[project]
+name = "agilent_vspin_sila"
+version = "0.1.0"
+description = "SiLA 2 server and driver for the Agilent VSpin Centrifuge"
+requires-python = ">=3.8"
+dependencies = [
+    "sila2",
+    "typer",
+    "pyserial"
+]
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["vspin_sila*", "vspin_driver*"]
+
+[tool.setuptools.package-data]
+"vspin_sila.generated" = [
+    "*/*.sila.xml",
+    "*/*.proto",
+]
+"vspin_driver" = ["py.typed"]

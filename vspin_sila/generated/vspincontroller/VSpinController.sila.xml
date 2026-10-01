@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Feature SiLA2Version="1.1" FeatureVersion="1.0" MaturityLevel="Draft" Originator="org.mycompany"
+         Category="robotics"
+         xmlns="http://www.sila-standard.org"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.sila-standard.org https://gitlab.com/SiLA2/sila_base/raw/master/schema/FeatureDefinition.xsd">
+    <Identifier>VSpinController</Identifier>
+    <DisplayName>VSpin Controller</DisplayName>
+    <Description>
+        A feature to control a VSpin centrifuge with an integrated plate loader.
+        It provides high-level commands for common operations like loading, unloading, and spinning,
+        as well as lower-level commands for direct control of the hardware components.
+    </Description>
+
+    <Command>
+        <Identifier>StartSpin</Identifier>
+        <DisplayName>Start Spin</DisplayName>
+        <Description>Starts a centrifugation cycle with the specified parameters.</Description>
+        <Observable>Yes</Observable>
+        <Parameter>
+            <Identifier>GForce</Identifier>
+            <DisplayName>G-Force</DisplayName>
+            <Description>The relative centrifugal force to apply.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType>
+                        <Basic>Real</Basic>
+                    </DataType>
+                    <Constraints>
+                        <MinimalInclusive>1.0</MinimalInclusive>
+                        <MaximalInclusive>1000.0</MaximalInclusive>
+                        <Unit>
+                            <Label>g</Label>
+                            <Factor>9.80665</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Meter</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                            <UnitComponent>
+                                <SIUnit>Second</SIUnit>
+                                <Exponent>-2</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>Duration</Identifier>
+            <DisplayName>Duration</DisplayName>
+            <Description>The duration of the spin cycle in seconds.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType>
+                        <Basic>Integer</Basic>
+                    </DataType>
+                    <Constraints>
+                        <MinimalInclusive>1</MinimalInclusive>
+                        <Unit>
+                            <Label>s</Label>
+                            <Factor>1</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Second</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>Acceleration</Identifier>
+            <DisplayName>Acceleration</DisplayName>
+            <Description>The acceleration ramp as a percentage of the maximum possible acceleration.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType>
+                        <Basic>Real</Basic>
+                    </DataType>
+                    <Constraints>
+                        <MinimalInclusive>1.0</MinimalInclusive>
+                        <MaximalInclusive>100.0</MaximalInclusive>
+                        <Unit>
+                            <Label>%</Label>
+                            <Factor>0.01</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Dimensionless</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+    </Command>
+
+    <Command>
+        <Identifier>Load</Identifier>
+        <DisplayName>Load Plate</DisplayName>
+        <Description>Loads a plate from the external stage into a specified centrifuge bucket.</Description>
+        <Observable>Yes</Observable>
+        <Parameter>
+            <Identifier>BucketNumber</Identifier>
+            <DisplayName>Bucket Number</DisplayName>
+            <Description>The target bucket for the plate (1 or 2).</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>Integer</Basic></DataType>
+                    <Constraints>
+                        <Set>
+                            <Value>1</Value>
+                            <Value>2</Value>
+                        </Set>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>GripperZOffset</Identifier>
+            <DisplayName>Gripper Z-Offset</DisplayName>
+            <Description>The vertical offset for the gripper movement.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>Real</Basic></DataType>
+                    <Constraints>
+                        <MinimalInclusive>2.6</MinimalInclusive>
+                        <MaximalInclusive>21.1</MaximalInclusive>
+                         <Unit>
+                            <Label>mm</Label>
+                            <Factor>0.001</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Meter</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>PlateHeight</Identifier>
+            <DisplayName>Plate Height</DisplayName>
+            <Description>The height of the labware being handled.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>Real</Basic></DataType>
+                    <Constraints>
+                        <MinimalInclusive>2.6</MinimalInclusive>
+                        <MaximalInclusive>48.3</MaximalInclusive>
+                         <Unit>
+                            <Label>mm</Label>
+                            <Factor>0.001</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Meter</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>Speed</Identifier>
+            <DisplayName>Speed</DisplayName>
+            <Description>The speed of the loader movement.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>String</Basic></DataType>
+                    <Constraints>
+                        <Set>
+                            <Value>Slow</Value>
+                            <Value>Medium</Value>
+                            <Value>Fast</Value>
+                        </Set>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>IsGentle</Identifier>
+            <DisplayName>Is Gentle</DisplayName>
+            <Description>If true, the gripper will use a gentle grip profile.</Description>
+            <DataType><Basic>Boolean</Basic></DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>IgnorePlateSensor</Identifier>
+            <DisplayName>Ignore Plate Sensor</DisplayName>
+            <Description>If true, the optical sensor for plate detection will be ignored.</Description>
+            <DataType><Basic>Boolean</Basic></DataType>
+        </Parameter>
+        <DefinedExecutionErrors>
+            <Identifier>NoPlateDetected</Identifier>
+        </DefinedExecutionErrors>
+    </Command>
+
+    <Command>
+        <Identifier>Unload</Identifier>
+        <DisplayName>Unload Plate</DisplayName>
+        <Description>Unloads a plate from a specified centrifuge bucket to the external stage.</Description>
+        <Observable>Yes</Observable>
+        <Parameter>
+            <Identifier>BucketNumber</Identifier>
+            <DisplayName>Bucket Number</DisplayName>
+            <Description>The source bucket of the plate (1 or 2).</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>Integer</Basic></DataType>
+                    <Constraints>
+                        <Set>
+                            <Value>1</Value>
+                            <Value>2</Value>
+                        </Set>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>GripperZOffset</Identifier>
+            <DisplayName>Gripper Z-Offset</DisplayName>
+            <Description>The vertical offset for the gripper movement.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>Real</Basic></DataType>
+                    <Constraints>
+                        <MinimalInclusive>2.6</MinimalInclusive>
+                        <MaximalInclusive>21.1</MaximalInclusive>
+                         <Unit>
+                            <Label>mm</Label>
+                            <Factor>0.001</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Meter</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>PlateHeight</Identifier>
+            <DisplayName>Plate Height</DisplayName>
+            <Description>The height of the labware being handled.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>Real</Basic></DataType>
+                    <Constraints>
+                        <MinimalInclusive>2.6</MinimalInclusive>
+                        <MaximalInclusive>48.3</MaximalInclusive>
+                         <Unit>
+                            <Label>mm</Label>
+                            <Factor>0.001</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Meter</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>Speed</Identifier>
+            <DisplayName>Speed</DisplayName>
+            <Description>The speed of the loader movement.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>String</Basic></DataType>
+                    <Constraints>
+                        <Set>
+                            <Value>Slow</Value>
+                            <Value>Medium</Value>
+                            <Value>Fast</Value>
+                        </Set>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>IsGentle</Identifier>
+            <DisplayName>Is Gentle</DisplayName>
+            <Description>If true, the gripper will use a gentle grip profile.</Description>
+            <DataType><Basic>Boolean</Basic></DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>IgnorePlateSensor</Identifier>
+            <DisplayName>Ignore Plate Sensor</DisplayName>
+            <Description>If true, the optical sensor for plate detection will be ignored.</Description>
+            <DataType><Basic>Boolean</Basic></DataType>
+        </Parameter>
+        <DefinedExecutionErrors>
+            <Identifier>NoPlateDetected</Identifier>
+            <Identifier>StageOccupied</Identifier>
+        </DefinedExecutionErrors>
+    </Command>
+
+    <Command>
+        <Identifier>GoToTeachpoint</Identifier>
+        <DisplayName>Go To Teachpoint</DisplayName>
+        <Description>Moves the loader to a predefined teachpoint.</Description>
+        <Observable>Yes</Observable>
+        <Parameter>
+            <Identifier>TeachpointName</Identifier>
+            <DisplayName>Teachpoint Name</DisplayName>
+            <Description>The name of the destination teachpoint.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>String</Basic></DataType>
+                    <Constraints>
+                        <Set>
+                            <Value>Park</Value>
+                            <Value>Stage</Value>
+                            <Value>Bucket 1</Value>
+                            <Value>Bucket 2</Value>
+                            <Value>Hover</Value>
+                        </Set>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>GripperZOffset</Identifier>
+            <DisplayName>Gripper Z-Offset</DisplayName>
+            <Description>The vertical offset for the gripper movement.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>Real</Basic></DataType>
+                    <Constraints>
+                        <MinimalInclusive>2.6</MinimalInclusive>
+                        <MaximalInclusive>21.1</MaximalInclusive>
+                         <Unit>
+                            <Label>mm</Label>
+                            <Factor>0.001</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Meter</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>PlateHeight</Identifier>
+            <DisplayName>Plate Height</DisplayName>
+            <Description>The height of the labware being handled.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>Real</Basic></DataType>
+                    <Constraints>
+                        <MinimalInclusive>2.6</MinimalInclusive>
+                        <MaximalInclusive>48.3</MaximalInclusive>
+                         <Unit>
+                            <Label>mm</Label>
+                            <Factor>0.001</Factor>
+                            <Offset>0</Offset>
+                            <UnitComponent>
+                                <SIUnit>Meter</SIUnit>
+                                <Exponent>1</Exponent>
+                            </UnitComponent>
+                        </Unit>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+        <Parameter>
+            <Identifier>Speed</Identifier>
+            <DisplayName>Speed</DisplayName>
+            <Description>The speed of the loader movement.</Description>
+            <DataType>
+                <Constrained>
+                    <DataType><Basic>String</Basic></DataType>
+                    <Constraints>
+                        <Set>
+                            <Value>Slow</Value>
+                            <Value>Medium</Value>
+                            <Value>Fast</Value>
+                        </Set>
+                    </Constraints>
+                </Constrained>
+            </DataType>
+        </Parameter>
+    </Command>
+
+    <Command>
+        <Identifier>GoToBucket1</Identifier>
+        <DisplayName>Go To Bucket 1</DisplayName>
+        <Description>Moves the centrifuge rotor to the position for accessing bucket 1.</Description>
+        <Observable>Yes</Observable>
+    </Command>
+    
+    <Command>
+        <Identifier>GoToBucket2</Identifier>
+        <DisplayName>Go To Bucket 2</DisplayName>
+        <Description>Moves the centrifuge rotor to the position for accessing bucket 2.</Description>
+        <Observable>Yes</Observable>
+    </Command>
+
+    <Command>
+        <Identifier>OpenGripper</Identifier>
+        <DisplayName>Open Gripper</DisplayName>
+        <Description>Opens the loader gripper.</Description>
+        <Observable>No</Observable>
+    </Command>
+
+    <Command>
+        <Identifier>CloseGripper</Identifier>
+        <DisplayName>Close Gripper</DisplayName>
+        <Description>Closes the loader gripper.</Description>
+        <Observable>No</Observable>
+        <Parameter>
+            <Identifier>IsGentle</Identifier>
+            <DisplayName>Is Gentle</DisplayName>
+            <Description>If true, the gripper will use a gentle grip profile.</Description>
+            <DataType><Basic>Boolean</Basic></DataType>
+        </Parameter>
+    </Command>
+
+    <Command>
+        <Identifier>OpenDoor</Identifier>
+        <DisplayName>Open Door</DisplayName>
+        <Description>Opens the centrifuge door.</Description>
+        <Observable>No</Observable>
+    </Command>
+
+    <Command>
+        <Identifier>CloseDoor</Identifier>
+        <DisplayName>Close Door</DisplayName>
+        <Description>Closes the centrifuge door.</Description>
+        <Observable>No</Observable>
+    </Command>
+
+    <Command>
+        <Identifier>LockDoor</Identifier>
+        <DisplayName>Lock Door</DisplayName>
+        <Description>Locks the centrifuge door.</Description>
+        <Observable>No</Observable>
+    </Command>
+
+    <Command>
+        <Identifier>UnlockDoor</Identifier>
+        <DisplayName>Unlock Door</DisplayName>
+        <Description>Unlocks the centrifuge door.</Description>
+        <Observable>No</Observable>
+    </Command>
+
+    <Command>
+        <Identifier>LockBucket</Identifier>
+        <DisplayName>Lock Bucket</DisplayName>
+        <Description>Locks the centrifuge bucket in place.</Description>
+        <Observable>No</Observable>
+    </Command>
+
+    <Command>
+        <Identifier>UnlockBucket</Identifier>
+        <DisplayName>Unlock Bucket</DisplayName>
+        <Description>Unlocks the centrifuge bucket.</Description>
+        <Observable>No</Observable>
+    </Command>
+    
+    <Property>
+        <Identifier>DoorStatus</Identifier>
+        <DisplayName>Door Status</DisplayName>
+        <Description>The current status of the centrifuge door.</Description>
+        <Observable>Yes</Observable>
+        <DataType>
+            <Constrained>
+                <DataType><Basic>String</Basic></DataType>
+                <Constraints>
+                    <Set>
+                        <Value>CLOSED</Value>
+                        <Value>OPENING</Value>
+                        <Value>OPEN</Value>
+                        <Value>CLOSING</Value>
+                        <Value>UNKNOWN</Value>
+                    </Set>
+                </Constraints>
+            </Constrained>
+        </DataType>
+    </Property>
+
+    <Property>
+        <Identifier>IsPlateInGripper</Identifier>
+        <DisplayName>Is Plate In Gripper</DisplayName>
+        <Description>Indicates if the loader's optical sensor detects a plate in the gripper.</Description>
+        <Observable>Yes</Observable>
+        <DataType><Basic>Boolean</Basic></DataType>
+    </Property>
+
+    <Property>
+        <Identifier>RotorPosition</Identifier>
+        <DisplayName>Rotor Position</DisplayName>
+        <Description>The current raw position of the centrifuge rotor.</Description>
+        <Observable>Yes</Observable>
+        <DataType><Basic>Integer</Basic></DataType>
+    </Property>
+
+    <Property>
+        <Identifier>CentrifugeStatus</Identifier>
+        <DisplayName>Centrifuge Status</DisplayName>
+        <Description>The overall status of the centrifuge and loader system.</Description>
+        <Observable>Yes</Observable>
+        <DataType>
+            <Constrained>
+                <DataType><Basic>String</Basic></DataType>
+                <Constraints>
+                    <Set>
+                        <Value>Idle</Value>
+                        <Value>Spinning</Value>
+                        <Value>Loading</Value>
+                        <Value>Unloading</Value>
+                        <Value>Moving</Value>
+                        <Value>Error</Value>
+                        <Value>Initializing</Value>
+                        <Value>Uninitialized</Value>
+                    </Set>
+                </Constraints>
+            </Constrained>
+        </DataType>
+    </Property>
+    
+    <DefinedExecutionError>
+        <Identifier>NoPlateDetected</Identifier>
+        <DisplayName>No Plate Detected</DisplayName>
+        <Description>The operation failed because a plate was expected but not detected by the sensor.</Description>
+    </DefinedExecutionError>
+
+    <DefinedExecutionError>
+        <Identifier>StageOccupied</Identifier>
+        <DisplayName>Stage Occupied</DisplayName>
+        <Description>The operation failed because the destination stage was occupied.</Description>
+    </DefinedExecutionError>
+    
+    <DefinedExecutionError>
+        <Identifier>DeviceNotInitialized</Identifier>
+        <DisplayName>Device Not Initialized</DisplayName>
+        <Description>The command could not be executed because the device has not been initialized.</Description>
+    </DefinedExecutionError>
+
+</Feature>
